@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_invoice_document_ra" inherit_id="account.report_invoice_document">
+        <xpath expr="//div[hasclass('page')]" position="inside">
+            <div t-if="o.move_type == 'out_invoice' and (o.ra_retention_amount or o.ra_recovery_amount)"
+                 id="ra_deductions" class="row justify-content-end mt-3">
+                <div class="col-6">
+                    <table class="table table-sm table-borderless">
+                        <tr>
+                            <td>Invoice total</td>
+                            <td class="text-end">
+                                <span t-field="o.amount_total"/>
+                            </td>
+                        </tr>
+                        <tr t-if="o.ra_retention_amount">
+                            <td>Less: retention (<span t-out="o.ra_retention_pct" t-options='{"widget": "float", "precision": 2}'/>%)</td>
+                            <td class="text-end">
+                                - <span t-field="o.ra_retention_amount"/>
+                            </td>
+                        </tr>
+                        <tr t-if="o.ra_recovery_amount">
+                            <td>Less: advance recovery</td>
+                            <td class="text-end">
+                                - <span t-field="o.ra_recovery_amount"/>
+                            </td>
+                        </tr>
+                        <tr class="border-black fw-bold">
+                            <td>Amount to pay now</td>
+                            <td class="text-end">
+                                <span t-field="o.ra_amount_to_pay"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

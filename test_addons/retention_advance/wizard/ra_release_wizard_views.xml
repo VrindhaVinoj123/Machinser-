@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ra_release_wizard_form" model="ir.ui.view">
+        <field name="name">ra.release.wizard.form</field>
+        <field name="model">ra.release.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Release Retention">
+                <group>
+                    <group>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="partner_id" options="{'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="date"/>
+                    </group>
+                </group>
+                <field name="line_ids">
+                    <list editable="bottom" create="0" delete="0">
+                        <field name="retention_line_id" column_invisible="1"/>
+                        <field name="invoice_id" readonly="1"/>
+                        <field name="project_id" readonly="1"/>
+<field name="handover_date" readonly="1" force_save="1"/>
+                        <field name="currency_id" column_invisible="1"/>
+                        <field name="retained_amount" readonly="1"/>
+                        <field name="remaining_amount" readonly="1" force_save="1"/>
+                        <field name="release_amount"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_release" type="object" string="Release" class="btn-primary"/>
+                    <button name="action_fill_full" type="object" string="Fill Full Amounts" class="btn-secondary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ra_release_wizard" model="ir.actions.act_window">
+        <field name="name">Release Retention</field>
+        <field name="res_model">ra.release.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
