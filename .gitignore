@@ -1,0 +1,105 @@
+# ================================
+# Python bytecode and cache files
+# ================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# ================================
+# Odoo generated / compiled files
+# ================================
+*.log
+*.pot
+*.mo
+*.db
+*.dat
+*.zip
+
+# Odoo session/store files
+.sessions/
+*.session
+
+# Local addons build (optional)
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# ================================
+# Odoo Enterprise - avoid tracking binaries or licenses
+# ================================
+enterprise/  # only if enterprise code is not supposed to be in your repo
+*.license
+
+# ================================
+# Odoo.sh specific
+# ================================
+.env/
+.venv/
+*.env
+*.venv
+*.sqlite3
+
+# Do not commit pipenv or poetry lock files unless necessary
+Pipfile.lock
+poetry.lock
+
+# Do not commit the local pip cache or virtualenv
+pip-wheel-metadata/
+*.egg/
+.installed.cfg
+
+# Ignore npm/yarn/pnpm caches if JS dev is present
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ================================
+# IDEs and Editors
+# ================================
+# VS Code
+.vscode/
+.history/
+
+# PyCharm
+.idea/
+*.iml
+
+# Sublime
+*.sublime-workspace
+*.sublime-project
+
+# ================================
+# OS-specific files
+# ================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ================================
+# Test / coverage files
+# ================================
+.coverage
+.tox/
+.noseids
+test-results/
+htmlcov/
+.pytest_cache/
+
+# ================================
+# Miscellaneous
+# ================================
+*.bak
+*.tmp
+*.swp
+*.swo
+
+# ================================
+# Database backups (optional)
+# ================================
+*.sql
+*.dump
+*.sql.gz
