@@ -15,11 +15,6 @@ class AccountPayment(models.Model):
              "is recovered on an invoice that has a sales order.")
 
     def _ra_payment_lines(self):
-        """Journal items of this payment.
-
-        On Odoo 19 the payment-to-entry link is kept on the journal entry (`origin_payment_id`);
-        `move_id` and the item-level `payment_id` can be empty. Try each link in turn.
-        """
         self.ensure_one()
         Line = self.env['account.move.line']
         lines = Line.search([('move_id.origin_payment_id', '=', self.id)])

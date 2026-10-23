@@ -15,7 +15,7 @@ class AccountMove(models.Model):
     _inherit = 'account.move'
 
     # ------------------------------------------------------------------
-    # Fields entered / shown on the customer invoice (invoice currency)
+    # Fields shown on the customer invoice (invoice currency)
     # ------------------------------------------------------------------
     ra_retention_pct = fields.Float(
         string='Retention %', digits=(5, 2), compute='_compute_ra_retention_pct',
