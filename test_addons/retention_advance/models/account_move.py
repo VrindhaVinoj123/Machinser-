@@ -64,10 +64,34 @@ class AccountMove(models.Model):
     ra_cn_ratio = fields.Float(
         string='Credit Note Ratio', copy=False,
         help="Share of the original invoice credited by this credit note (set at posting).")
+    ra_retention_released = fields.Monetary(
+        string='Retention Released', compute='_compute_ra_retention_balance',
+        currency_field='currency_id')
+    ra_retention_held = fields.Monetary(
+        string='Retention Still Held', compute='_compute_ra_retention_balance',
+        currency_field='currency_id')
 
     # ------------------------------------------------------------------
     # Computes
     # ------------------------------------------------------------------
+
+    @api.depends('ra_retention_amount', 'state', 'ra_helper_move_ids.state',
+                 'ra_helper_move_ids.line_ids.amount_residual_currency')
+    def _compute_ra_retention_balance(self):
+        for move in self:
+            released = held = 0.0
+            if move.move_type == 'out_invoice' and move.state == 'posted' and move.id:
+                helpers = self._ra_filter_active(self.env['account.move'].search([
+                    ('ra_invoice_id', '=', move.id), ('ra_kind', 'in', ('retention', 'release'))]))
+                for helper in helpers:
+                    debit_lines = helper.line_ids.filtered(lambda l: l.balance > 0)
+                    if helper.ra_kind == 'retention':
+                        held += sum(debit_lines.mapped('amount_residual_currency'))
+                    else:
+                        released += sum(debit_lines.mapped('amount_currency'))
+            move.ra_retention_released = released
+            move.ra_retention_held = held
+
     @api.depends('company_id', 'move_type')
     def _compute_ra_retention_pct(self):
         for move in self:
@@ -127,7 +151,7 @@ class AccountMove(models.Model):
     @api.constrains('ra_advance_payment_id', 'ra_recovery_amount')
     def _check_ra_advance_remaining(self):
         for move in self.filtered(lambda m: m.state == 'draft' and m.move_type == 'out_invoice'
-                                  and m.ra_advance_payment_id and m.ra_recovery_amount):
+                                            and m.ra_advance_payment_id and m.ra_recovery_amount):
             remaining = move._ra_advance_remaining()
             if move.currency_id.compare_amounts(move.ra_recovery_amount, remaining) > 0:
                 raise ValidationError(_(
@@ -180,7 +204,7 @@ class AccountMove(models.Model):
         """Posted helper entries that were not reversed (and are not reversals themselves)."""
         return moves.filtered(
             lambda m: m.state == 'posted' and not m.reversed_entry_id
-            and not m.reversal_move_ids.filtered(lambda r: r.state == 'posted'))
+                      and not m.reversal_move_ids.filtered(lambda r: r.state == 'posted'))
 
     def _ra_active_helpers(self, kinds):
         self.ensure_one()
@@ -255,7 +279,7 @@ class AccountMove(models.Model):
     def _post(self, soft=True):
         to_check = self.filtered(
             lambda m: m.state == 'draft' and m.move_type == 'out_invoice'
-            and (m.ra_retention_amount or m.ra_recovery_amount))
+                      and (m.ra_retention_amount or m.ra_recovery_amount))
         for move in to_check:
             move._ra_check_before_post()
         posted = super()._post(soft=soft)

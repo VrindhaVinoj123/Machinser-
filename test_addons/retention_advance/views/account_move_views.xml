@@ -30,6 +30,8 @@
                             <field name="ra_retention_amount" string="Less: Retention"/>
                             <field name="ra_recovery_amount" string="Less: Advance Recovery"/>
                             <field name="ra_amount_to_pay" class="fw-bold"/>
+                            <field name="ra_retention_released" invisible="state == 'draft'"/>
+                            <field name="ra_retention_held" invisible="state == 'draft'"/>
                             <field name="ra_project_id"/>
                         </group>
                     </group>
